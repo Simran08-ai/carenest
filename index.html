@@ -88,6 +88,7 @@ footer{padding-block:2rem 3rem;color:var(--muted);font-size:.9rem}
     <div class="read"><p>Most smart home tools for dementia are built around the patient. CareNest is built around the family member who does the caring. We used two public datasets, the CDC BRFSS 2022 Caregiver Module and the CASAS Smart Home dataset, to decide what the system should alert on, and then designed a caregiver app and a clinician dashboard from those findings.</p></div>
     <div class="links">
       <a class="btn primary" href="https://www.figma.com/design/Qw6E0WMZG2KtJ9BelYvXZI/carnets" target="_blank" rel="noopener">Open Figma prototype</a>
+      <a class="btn primary" href="https://carenest-dashboard-tjofqtqjqbhnrevuckqlxz.streamlit.app" target="_blank" rel="noopener">Open live dashboard</a>
       <a class="btn" href="docs/CareNest_Final_Project_Report.pdf" target="_blank" rel="noopener">Final report (PDF)</a>
       <a class="btn" href="docs/CareNest_Final_Presentation.pdf" target="_blank" rel="noopener">Slides (PDF)</a>
       <a class="btn" href="#talk">Watch the talk</a>
@@ -165,6 +166,7 @@ footer{padding-block:2rem 3rem;color:var(--muted);font-size:.9rem}
 
 <section id="dashboard"><div class="wrap">
   <h2>Clinician dashboard (Streamlit prototype)</h2>
+  <p class="lead read"><a class="btn primary" href="https://carenest-dashboard-tjofqtqjqbhnrevuckqlxz.streamlit.app" target="_blank" rel="noopener">Open the live dashboard</a></p>
   <p class="lead read">Built on real CASAS task scores. A task is flagged when a person scores worse than 3 of 4 healthy adults; 4 or more of 9 flags means “Needs attention”.</p>
   <div class="stats" style="margin-bottom:1.2rem">
     <div class="stat"><b>23 of 70 (33%)</b><span>people with memory problems marked “Needs attention”</span></div>
@@ -173,7 +175,7 @@ footer{padding-block:2rem 3rem;color:var(--muted);font-size:.9rem}
   </div>
   <div class="tabs" role="group" aria-label="Dashboard views" id="dtabs"></div>
   <div class="figure"><img id="dimg" src="assets/dash_1_list.png" alt="Clinician dashboard patient list"><div class="cap" id="dcap"></div></div>
-  <p class="note" style="margin-top:1rem">The flags come from observer-scored CASAS tasks, not automatic sensor detection. The cutoffs are simple starting points, not clinically validated, and the caregiver strain flag is a demonstration input. To run it: <i>pip install -r requirements.txt</i>, then <i>streamlit run app.py</i>.</p>
+  <p class="note" style="margin-top:1rem">The flags come from observer-scored CASAS tasks, not automatic sensor detection. The cutoffs are simple starting points, not clinically validated, and the caregiver strain flag is a demonstration input. Try it live at the link above. If it shows “Wake up this app”, click it and wait about 30 seconds.</p>
 </div></section>
 
 <section id="design"><div class="wrap">
