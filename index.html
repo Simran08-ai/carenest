@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CareNest</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap">
+<style>
+/* Layout: one narrow reading column; wide bands for the diagram and the interactive prototype */
+:root{
+  --bg:#F7F9FB; --surface:#FFFFFF; --fg:#18232E; --muted:#56636F; --line:#D6DEE6;
+  --navy:#1F4E79; --teal:#2A6F6F; --tealsoft:#E4F0EF; --head:#D9E2F3;
+  --ok:#2E7D4F; --warn:#C98A12; --alert:#B3402F;
+  --serif:'Times New Roman',Times,'Liberation Serif',serif;
+  --sans:Inter,system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0F1720; --surface:#16212C; --fg:#E6ECF2; --muted:#A3B0BC; --line:#2A3846;
+  --navy:#8DB6E0; --teal:#6FC2BC; --tealsoft:#183331; --head:#1D2C3D; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0F1720; --surface:#16212C; --fg:#E6ECF2; --muted:#A3B0BC; --line:#2A3846;
+  --navy:#8DB6E0; --teal:#6FC2BC; --tealsoft:#183331; --head:#1D2C3D; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:16px;line-height:1.6;margin:0;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:980px;margin:0 auto}
+.read{max-width:68ch}
+h1,h2,h3{font-family:var(--serif);color:var(--navy);text-wrap:balance;line-height:1.2}
+h1{font-size:clamp(2.4rem,6vw,3.6rem);margin:0}
+h2{font-size:1.9rem;margin:0 0 .4rem}
+h3{font-size:1.25rem;margin:0 0 .3rem}
+p{margin:0 0 .8rem}
+a{color:var(--teal)}
+a:focus-visible,button:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+header{padding-block:3rem 2rem;border-bottom:1px solid var(--line)}
+.kicker{font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:.6rem}
+.tag{font-family:var(--serif);font-style:italic;font-size:1.35rem;color:var(--fg);margin:.4rem 0 1rem}
+.meta{color:var(--muted);font-size:.95rem}
+.links{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:1.2rem}
+.btn{display:inline-block;padding:.5rem .9rem;border:1px solid var(--teal);border-radius:6px;text-decoration:none;font-weight:500;font-size:.92rem}
+.btn.primary{background:var(--teal);color:var(--surface)}
+nav{position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);border-bottom:1px solid var(--line);z-index:5;overflow-x:auto}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+nav .wrap{display:flex;gap:1.2rem;padding-block:.6rem;white-space:nowrap;font-size:.9rem}
+nav a{text-decoration:none;color:var(--muted)}
+nav a:hover{color:var(--teal)}
+section{padding-block:2.6rem;border-bottom:1px solid var(--line)}
+.lead{color:var(--muted);margin-bottom:1.2rem}
+.figure{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:12px}
+.figure img{display:block;width:100%;height:auto;border-radius:4px;background:#fff}
+.cap{font-size:.88rem;color:var(--muted);font-style:italic;margin-top:.5rem}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:1rem}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:14px}
+.stat b{display:block;font-family:var(--serif);font-size:1.9rem;color:var(--navy);font-variant-numeric:tabular-nums}
+.stat span{font-size:.9rem;color:var(--muted)}
+.tablewrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:.93rem;background:var(--surface)}
+th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+th{background:var(--head)}
+/* prototype */
+.proto{display:grid;grid-template-columns:minmax(0,300px) minmax(0,1fr);gap:28px;align-items:start}
+@media (max-width:720px){.proto{grid-template-columns:1fr}.phone{margin:0 auto}}
+.phone{width:100%;max-width:300px;border:10px solid #1b2530;border-radius:34px;overflow:hidden;background:#fff;box-shadow:0 10px 30px rgba(0,0,0,.18)}
+.phone img{display:block;width:100%;height:auto}
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:1rem}
+.tabs button{font:inherit;font-size:.88rem;padding:.4rem .75rem;border:1px solid var(--line);border-radius:999px;background:var(--surface);color:var(--fg);cursor:pointer}
+.tabs button[aria-pressed="true"]{background:var(--teal);border-color:var(--teal);color:var(--surface)}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;vertical-align:1px}
+.why{border-left:3px solid var(--teal);padding:.2rem 0 .2rem .9rem;margin-top:.6rem}
+.why small{display:block;text-transform:uppercase;letter-spacing:.06em;font-size:.72rem;color:var(--muted)}
+.scen{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.scard{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:16px;min-width:0}
+.scard dl{margin:.5rem 0 0;font-size:.92rem}
+.scard dt{font-weight:600;margin-top:.45rem}
+.scard dd{margin:0;color:var(--muted)}
+.scard button{margin-top:.8rem;font:inherit;font-size:.85rem;background:none;border:1px solid var(--teal);color:var(--teal);border-radius:6px;padding:.3rem .7rem;cursor:pointer}
+.note{background:var(--tealsoft);border-radius:8px;padding:12px 16px;font-size:.93rem}
+footer{padding-block:2rem 3rem;color:var(--muted);font-size:.9rem}
+@media (prefers-reduced-motion:no-preference){.phone img{transition:opacity .2s}}
+</style>
+</head><body>
+
+<header>
+  <div class="wrap">
+    <div class="kicker">HIT 423 Digital Health · DePaul University · Fall 2026</div>
+    <h1>CareNest</h1>
+    <p class="tag">A caregiver-first smart home system for families living with dementia</p>
+    <p class="meta">Simran Chauhan &amp; Vaidehi Brahmbhatt</p>
+    <div class="read"><p>Most smart home tools for dementia are built around the patient. CareNest is built around the family member who does the caring. We used two public datasets, the CDC BRFSS 2022 Caregiver Module and the CASAS Smart Home dataset, to decide what the system should alert on, and then designed a caregiver app and a clinician dashboard from those findings.</p></div>
+    <div class="links">
+      <a class="btn primary" href="https://www.figma.com/design/Qw6E0WMZG2KtJ9BelYvXZI/carnets" target="_blank" rel="noopener">Open Figma prototype</a>
+      <a class="btn" href="docs/CareNest_Final_Project_Report.pdf" target="_blank" rel="noopener">Final report (PDF)</a>
+      <a class="btn" href="docs/CareNest_Final_Presentation.pdf" target="_blank" rel="noopener">Slides (PDF)</a>
+      <a class="btn" href="#talk">Watch the talk</a>
+      <a class="btn" href="docs/CareNest_Interface_Mockups.pdf" target="_blank" rel="noopener">Mockups (PDF)</a>
+    </div>
+  </div>
+</header>
+
+<nav aria-label="Sections"><div class="wrap">
+  <a href="#talk">Presentation</a><a href="#problem">Problem</a><a href="#dataflow">Data flow</a><a href="#study">Study flow</a><a href="#app">Caregiver app</a><a href="#scenarios">Scenarios</a><a href="#dashboard">Clinician dashboard</a><a href="#design">Findings to design</a>
+</div></nav>
+
+<main>
+<section id="talk"><div class="wrap">
+  <h2>Our presentation</h2>
+  <p class="lead read">Our Pecha Kucha talk: 20 slides, 20 seconds each, narrated by Vaidehi (slides 1–10) and Simran (slides 11–20).</p>
+  <div class="figure"><video controls preload="metadata" style="display:block;width:100%;height:auto;border-radius:4px;background:#000" src="docs/CareNest_Final_Presentation.mp4"></video>
+  <div class="cap">CareNest final presentation, 6:40.</div></div>
+</div></section>
+
+<section id="problem"><div class="wrap">
+  <h2>The problem</h2>
+  <div class="read"><p>A caregiver at work can't tell if her mother took her evening pills or left the stove on. Home sensors can record these things, but more data doesn't make caregiving easier. In a randomized trial of 179 caregivers, remote monitoring had no direct effect on selected caregiver outcomes (Gaugler et al.). So we treated this as a design problem as much as a sensing problem.</p></div>
+  <div class="stats">
+    <div class="stat"><b>66.5% vs 48.6%</b><span>dementia vs other caregivers helping with personal care (BRFSS 2022, weighted)</span></div>
+    <div class="stat"><b>r = 0.43</b><span>pill dispenser task, the largest gap between people with memory problems and healthy adults (CASAS)</span></div>
+    <div class="stat"><b>0 of 7</b><span>whole-visit sensor counts that differed between groups</span></div>
+  </div>
+</div></section>
+
+<section id="dataflow"><div class="wrap">
+  <h2>Design sketch: data flow</h2>
+  <p class="lead read">How data moves across the digital health technologies in CareNest, from the sensors in the home to the caregiver and the care team.</p>
+  <div class="figure"><img src="assets/data_flow.png" alt="CareNest data flow: passive home sensors send events through a home hub to a secure cloud, which sends alerts to the caregiver app and, with consent, to the clinician dashboard; a link to the clinic EHR is a future step." loading="lazy">
+  <div class="cap">Passive sensors (pill box, stove, doors, hallway motion; no cameras or microphones) → home hub over Wi-Fi/Zigbee → secure CareNest cloud → caregiver app, and with consent the clinician dashboard. The HL7/FHIR link to the clinic EHR is a future step (dashed).</div></div>
+</div></section>
+
+<section id="study"><div class="wrap">
+  <h2>Design sketch: how we built the evidence</h2>
+  <p class="lead read">The two datasets describe different people and can't be linked, so we analyzed them separately and brought them together only at the design stage.</p>
+  <div class="figure"><img src="assets/participant_flow.png" alt="Participant flow for the BRFSS and CASAS samples used in the analysis." loading="lazy">
+  <div class="cap">BRFSS: 19,270 caregivers analyzed (4,632 dementia, 14,638 other). CASAS: 70 people with dementia or MCI vs 109 healthy older adults.</div></div>
+</div></section>
+
+<section id="app"><div class="wrap">
+  <h2>Caregiver app (Figma prototype)</h2>
+  <p class="lead read">Click through the screens. Our persona is Maria, 52, who works full time and cares for her mother Rosa, 78, who has dementia and lives alone nearby. Trend values are example data.</p>
+  <div class="proto">
+    <div class="phone"><img id="screen" src="assets/1_Home_green.png" alt="CareNest app home screen on a normal day"></div>
+    <div style="min-width:0">
+      <div class="tabs" role="group" aria-label="App screens" id="tabs"></div>
+      <h3 id="sTitle"></h3>
+      <p id="sText"></p>
+      <div class="why"><small>Why this screen exists</small><span id="sWhy"></span></div>
+      <p class="cap" style="margin-top:1rem">For the full clickable version, open the <a href="https://www.figma.com/design/Qw6E0WMZG2KtJ9BelYvXZI/carnets" target="_blank" rel="noopener">Figma file</a>.</p>
+    </div>
+  </div>
+</div></section>
+
+<section id="scenarios"><div class="wrap">
+  <h2>Scenario walkthroughs</h2>
+  <p class="lead read">We did a cognitive walkthrough of three scenarios ourselves, as designers. The question was whether a caregiver can quickly understand what happened, why it matters and what to do next.</p>
+  <div class="scen">
+    <div class="scard"><h3>1. Possible missed medication</h3><p>Rosa's pill box hasn't been opened by evening.</p>
+      <dl><dt>Worked</dt><dd>Home turns yellow and “Call Mom” is clear.</dd><dt>Problem</dt><dd>“Mark as handled” was vague.</dd><dt>Change</dt><dd>Options like “She took them” or “I reminded her”.</dd></dl>
+      <button type="button" data-go="1">Show this screen</button></div>
+    <div class="scard"><h3>2. Kitchen safety alert (proposed)</h3><p>The stove has been on for 40 minutes, longer than usual.</p>
+      <dl><dt>Worked</dt><dd>“Longer than usual for this time of day” explains why it matters.</dd><dt>Problem</dt><dd>Home and Alerts screens disagreed.</dd><dt>Change</dt><dd>Show live stove status and keep both screens in sync.</dd></dl>
+      <button type="button" data-go="2">Show this screen</button></div>
+    <div class="scard"><h3>3. Caregiver looking for support</h3><p>Maria reports high stress in her weekly check-in.</p>
+      <dl><dt>Worked</dt><dd>The check-in is quick and support options match her answers.</dd><dt>Problem</dt><dd>Support was only reachable through the check-in, and stress was shared with the care team without asking.</dd><dt>Change</dt><dd>An always-visible “I need support” and a consent step before sharing.</dd></dl>
+      <button type="button" data-go="4">Show this screen</button></div>
+  </div>
+</div></section>
+
+<section id="dashboard"><div class="wrap">
+  <h2>Clinician dashboard (Streamlit prototype)</h2>
+  <p class="lead read">Built on real CASAS task scores. A task is flagged when a person scores worse than 3 of 4 healthy adults; 4 or more of 9 flags means “Needs attention”.</p>
+  <div class="stats" style="margin-bottom:1.2rem">
+    <div class="stat"><b>23 of 70 (33%)</b><span>people with memory problems marked “Needs attention”</span></div>
+    <div class="stat"><b>3 of 109 (3%)</b><span>healthy older adults marked “Needs attention”</span></div>
+    <div class="stat"><b>41% vs 13%</b><span>medication task flagged</span></div>
+  </div>
+  <div class="tabs" role="group" aria-label="Dashboard views" id="dtabs"></div>
+  <div class="figure"><img id="dimg" src="assets/dash_1_list.png" alt="Clinician dashboard patient list"><div class="cap" id="dcap"></div></div>
+  <p class="note" style="margin-top:1rem">The flags come from observer-scored CASAS tasks, not automatic sensor detection. The cutoffs are simple starting points, not clinically validated, and the caregiver strain flag is a demonstration input. To run it: <i>pip install -r requirements.txt</i>, then <i>streamlit run app.py</i>.</p>
+</div></section>
+
+<section id="design"><div class="wrap">
+  <h2>From findings to design</h2>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Finding</th><th>Design decision</th><th>Where it appears</th></tr></thead>
+    <tbody>
+      <tr><td>Filling the pill dispenser showed the largest gap (r = 0.43; 0.45 in a broader sample)</td><td>Medication is the first alert</td><td>App Home and Alerts; dashboard medication flag</td></tr>
+      <tr><td>Making soup in the microwave also differed (r = 0.25)</td><td>Kitchen tasks come next; kitchen-safety alert (proposed)</td><td>App Home and Alerts; dashboard kitchen flag</td></tr>
+      <tr><td>Whole-visit sensor counts did not differ between groups</td><td>Few, task-based alerts instead of general movement</td><td>Alerts screen shows only important events</td></tr>
+      <tr><td>Dementia caregivers carry a heavier load (more hours, longer caregiving, more personal care)</td><td>Low-effort app, weekly check-in, support links</td><td>Check-in and Support screens</td></tr>
+      <tr><td>Monitoring alone had no direct effect on selected caregiver outcomes (Gaugler et al.)</td><td>Every alert says what to do next; link to the care team</td><td>Alert buttons; clinician dashboard</td></tr>
+    </tbody>
+  </table></div>
+  <p class="cap">CareNest is a prototype. It has not been tested with real caregivers or clinically validated.</p>
+</div></section>
+</main>
+
+<footer><div class="wrap">Simran Chauhan &amp; Vaidehi Brahmbhatt · HIT 423 Digital Health, DePaul University, Fall 2026 · Data: CDC BRFSS 2022; CASAS Smart Home dataset (Cook, 2025).</div></footer>
+
+<script>
+const S=[
+ {k:'Home: normal day',img:'1_Home_green.png',c:'ok',t:'A green status and a checklist for pills, kitchen and front door.',w:'A caregiver at work should see “all fine” at a glance.'},
+ {k:'Home: something’s off',img:'1_Home_yellow.png',c:'warn',t:'The status turns yellow when the evening pills haven’t been taken.',w:'Medication showed the largest gap in CASAS.'},
+ {k:'Alerts',img:'2_Alerts.png',c:'alert',t:'Only important events, each with “Call Mom” and one action.',w:'Activity counts didn’t differ between groups, so we show few, task-based alerts.'},
+ {k:'Trends',img:'3_Trends.png',c:'ok',t:'Weekly pills on time, meal times and nights up (example data).',w:'Helps the caregiver and care team see change over weeks.'},
+ {k:'Check-in',img:'4_CheckIn.png',c:'ok',t:'Three quick questions about sleep, stress and needing a break.',w:'About 1 in 4 caregivers reported frequent poor mental health.'},
+ {k:'Support',img:'5_Support.png',c:'ok',t:'Respite care, a support group and the Alzheimer’s Association helpline.',w:'Dementia caregivers carry a heavier load (BRFSS).'}];
+const col={ok:'var(--ok)',warn:'var(--warn)',alert:'var(--alert)'};
+const tabs=document.getElementById('tabs');
+S.forEach((s,i)=>{const b=document.createElement('button');b.type='button';b.innerHTML='<span class="dot" style="background:'+col[s.c]+'"></span>'+s.k;b.onclick=()=>show(i);tabs.appendChild(b);});
+function show(i){const s=S[i];const im=document.getElementById('screen');im.src='assets/'+s.img;im.alt='CareNest app: '+s.k;
+ document.getElementById('sTitle').textContent=s.k;document.getElementById('sText').textContent=s.t;document.getElementById('sWhy').textContent=s.w;
+ [...tabs.children].forEach((b,j)=>b.setAttribute('aria-pressed',j===i));}
+show(0);
+document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>{show(+b.dataset.go);document.getElementById('app').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});});
+const D=[
+ {k:'Patient list',img:'dash_1_list.png',c:'Patient list: who needs attention, with the number of flagged tasks.'},
+ {k:'Patient detail',img:'dash_2_detail154.png',c:'Patient detail (participant 154): which tasks were flagged, including medication and kitchen tasks.'},
+ {k:'Caregiver strain',img:'dash_3_strain.png',c:'Sensor summary and the caregiver weekly check-in. A high-stress answer raises a caregiver strain flag.'}];
+const dt=document.getElementById('dtabs');
+D.forEach((d,i)=>{const b=document.createElement('button');b.type='button';b.textContent=d.k;b.onclick=()=>dshow(i);dt.appendChild(b);});
+function dshow(i){const d=D[i];const im=document.getElementById('dimg');im.src='assets/'+d.img;im.alt='Clinician dashboard: '+d.k;document.getElementById('dcap').textContent=d.c;[...dt.children].forEach((b,j)=>b.setAttribute('aria-pressed',j===i));}
+dshow(0);
+</script>
+
+</body></html>
